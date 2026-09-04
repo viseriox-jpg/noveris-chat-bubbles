@@ -8,6 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 
 /** Registers the generic NeoForge config UI only on physical clients. */
 @EventBusSubscriber(modid = NoverisChatBubbles.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
@@ -24,7 +25,7 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void addPlayerBubbleLayers(EntityRenderersEvent.AddLayers event) {
         for (var skin : event.getSkins()) {
-            var renderer = event.getSkin(skin);
+            PlayerRenderer renderer = (PlayerRenderer) event.getSkin(skin);
             if (renderer != null) renderer.addLayer(new BubbleLayer(renderer));
         }
     }
