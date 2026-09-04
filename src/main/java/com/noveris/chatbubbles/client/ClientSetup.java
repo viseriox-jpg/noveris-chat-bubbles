@@ -8,7 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.neoforged.neoforge.common.NeoForge;
 
 /** Registers client configuration and the player render integration. */
@@ -22,9 +22,7 @@ public final class ClientSetup {
                 container.registerExtensionPoint(IConfigScreenFactory.class,
                         (modContainer, parent) -> new ConfigurationScreen(modContainer, parent)));
 
-        // Register explicitly on the game bus. This guarantees RenderPlayerEvent.Post
-        // is subscribed on NeoForge 21.1.248 even when automatic discovery is affected
-        // by a modpack's class loading/mixin setup.
+        // Register explicitly on the game bus so RenderPlayerEvent.Post is always subscribed.
         NeoForge.EVENT_BUS.register(BubbleRenderer.class);
         NoverisChatBubbles.LOGGER.info("Registered player bubble render events");
     }
