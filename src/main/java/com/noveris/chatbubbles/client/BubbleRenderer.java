@@ -56,7 +56,15 @@ public final class BubbleRenderer {
     private static int color(String hex, float alpha) { try { int rgb = Integer.parseInt(hex.replace("#", ""), 16) & 0xFFFFFF; return ((int)(alpha * 255) << 24) | rgb; } catch (RuntimeException e) { return ((int)(alpha * 255) << 24) | 0xFFFFFF; } }
     private static void drawBox(MultiBufferSource source, Matrix4f matrix, float x, float y, float w, float h, int background, int border) {
         var buffer = source.getBuffer(RenderType.gui());
-        vertex(buffer, matrix, x, y, background); vertex(buffer, matrix, x + w, y, background); vertex(buffer, matrix, x + w, y + h, background); vertex(buffer, matrix, x, y + h, background);
+        quad(buffer, matrix, x, y, w, h, background);
+        float t = 1f;
+        quad(buffer, matrix, x, y, w, t, border);
+        quad(buffer, matrix, x, y + h - t, w, t, border);
+        quad(buffer, matrix, x, y, t, h, border);
+        quad(buffer, matrix, x + w - t, y, t, h, border);
+    }
+    private static void quad(com.mojang.blaze3d.vertex.VertexConsumer buffer, Matrix4f matrix, float x, float y, float w, float h, int color) {
+        vertex(buffer, matrix, x, y, color); vertex(buffer, matrix, x + w, y, color); vertex(buffer, matrix, x + w, y + h, color); vertex(buffer, matrix, x, y + h, color);
     }
     private static void drawArrow(MultiBufferSource source, Matrix4f matrix, float center, float y, float alpha) {
         var buffer = source.getBuffer(RenderType.gui());
