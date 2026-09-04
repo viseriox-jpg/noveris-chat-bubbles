@@ -4,14 +4,11 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModList;
-import com.noveris.chatbubbles.NoverisChatBubbles;
+import net.neoforged.bus.api.IEventBus;
 
 public final class NetworkHandler {
-    private static IEventBus modBus;
     private NetworkHandler() {}
-    public static void register() {
-        modBus = ModList.get().getModContainerById(NoverisChatBubbles.MOD_ID).orElseThrow().getEventBus();
+    public static void register(IEventBus modBus) {
         modBus.addListener(NetworkHandler::registerPayloads);
     }
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {

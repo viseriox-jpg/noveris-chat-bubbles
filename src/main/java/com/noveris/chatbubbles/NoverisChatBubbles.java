@@ -10,15 +10,16 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.bus.api.IEventBus;
 
 @Mod(NoverisChatBubbles.MOD_ID)
 public final class NoverisChatBubbles {
     public static final String MOD_ID = "noveris_chat_bubbles";
 
-    public NoverisChatBubbles(ModContainer container) {
+    public NoverisChatBubbles(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
         container.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
-        NetworkHandler.register();
+        NetworkHandler.register(modBus);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
         NeoForge.EVENT_BUS.addListener(ChatManager::onServerChat);
     }
