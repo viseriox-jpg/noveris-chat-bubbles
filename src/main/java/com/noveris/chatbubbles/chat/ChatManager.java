@@ -45,8 +45,26 @@ public final class ChatManager {
         if (message.isEmpty()) return;
         int limit = ServerConfig.MAX_MESSAGE_LENGTH.get();
         if (message.length() > limit) message = message.substring(0, limit);
-        String format = ServerConfig.GLOBAL_FORMAT.get().replace("{player}", sender.getDisplayName().getString()).replace("{message}", message);
-        Component component = Component.literal(format);
+        Component component = formatGlobal(sender.getDisplayName(), message, ServerConfig.GLOBAL_FORMAT.get());
         for (ServerPlayer player : sender.server.getPlayerList().getPlayers()) player.sendSystemMessage(component);
+    }
+
+    /** Builds the configured format without flattening the formatted nickname. */
+    private static Component formatGlobal(Component displayName, String message, String format) {
+        Component result = Component.empty();
+        int cursor = 0;
+        while (cursor < format.length()) {
+            int playerToken = format.indexOf("{player}", cursor);
+            int messageToken = format.indexOf("{message}", cursor);
+            int next = -1;
+            String token = null;
+            if (playerToken >= 0 && (messageToken < 0 || playerToken < messageToken)) { next = playerToken; token = "{player}"; }
+            else if (messageToken >= 0) { next = messageToken; token = "{message}"; }
+            if (next < 0) { result = result.append(Component.literal(format.substring(cursor))); break; }
+            if (next > cursor) result = result.append(Component.literal(format.substring(cursor, next)));
+            result = result.append(token.equals("{player}") ? displayName : Component.literal(message));
+            cursor = next + token.length();
+        }
+        return result;
     }
 }

@@ -7,6 +7,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
 /** Registers the generic NeoForge config UI only on physical clients. */
 @EventBusSubscriber(modid = NoverisChatBubbles.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
@@ -18,5 +19,13 @@ public final class ClientSetup {
         ModList.get().getModContainerById(NoverisChatBubbles.MOD_ID).ifPresent(container ->
                 container.registerExtensionPoint(IConfigScreenFactory.class,
                         (modContainer, parent) -> new ConfigurationScreen(modContainer, parent)));
+    }
+
+    @SubscribeEvent
+    public static void addPlayerBubbleLayers(EntityRenderersEvent.AddLayers event) {
+        for (String skin : event.getSkins()) {
+            var renderer = event.getSkin(skin);
+            if (renderer != null) renderer.addLayer(new BubbleLayer(renderer));
+        }
     }
 }

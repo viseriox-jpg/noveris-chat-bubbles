@@ -16,7 +16,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import java.util.*;
 
-@EventBusSubscriber(modid = "noveris_chat_bubbles", value = Dist.CLIENT)
+/** Legacy event renderer retained as a helper/reference; BubbleLayer is the active renderer. */
 public final class BubbleRenderer {
     private BubbleRenderer() {}
     @SubscribeEvent
