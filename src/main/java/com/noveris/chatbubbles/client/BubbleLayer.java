@@ -15,9 +15,11 @@ import net.minecraft.util.FormattedCharSequence;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
+import com.noveris.chatbubbles.NoverisChatBubbles;
 
 /** A real player render layer; this is invoked as part of every player renderer. */
 public final class BubbleLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+    private static long lastTrace;
     public BubbleLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent) {
         super(parent);
     }
@@ -30,6 +32,11 @@ public final class BubbleLayer extends RenderLayer<AbstractClientPlayer, PlayerM
         if (mc.player == null || player.isInvisible() || mc.player.distanceToSqr(player) > Math.pow(ClientConfig.RENDER_DISTANCE.get(), 2)) return;
         Deque<BubbleManager.Bubble> bubbles = BubbleManager.visible(System.currentTimeMillis()).get(player.getUUID());
         if (!BubbleManager.isEnabled() || bubbles == null || bubbles.isEmpty()) return;
+        long traceNow = System.currentTimeMillis();
+        if (traceNow - lastTrace > 1000) {
+            lastTrace = traceNow;
+            NoverisChatBubbles.LOGGER.info("Bubble render layer invoked for {} with {} bubble(s)", player.getUUID(), bubbles.size());
+        }
 
         pose.pushPose();
         pose.translate(0.0D, player.getBbHeight() + 0.35D, 0.0D);

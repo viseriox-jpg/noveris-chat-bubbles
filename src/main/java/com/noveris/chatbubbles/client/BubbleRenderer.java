@@ -16,9 +16,11 @@ import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import java.util.*;
+import com.noveris.chatbubbles.NoverisChatBubbles;
 
 @EventBusSubscriber(modid = "noveris_chat_bubbles", value = Dist.CLIENT)
 public final class BubbleRenderer {
+    private static long lastFallbackTrace;
     private BubbleRenderer() {}
     // Kept as a compatibility helper; the active event fallback below is player-specific.
     public static void render(RenderLivingEvent.Post<?, ?> event) {
@@ -61,8 +63,14 @@ public final class BubbleRenderer {
     /** Fallback for player renderers on NeoForge builds where the living event is not dispatched for avatars. */
     @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent.Post event) {
-        if (event.getEntity() instanceof AbstractClientPlayer player)
+        if (event.getEntity() instanceof AbstractClientPlayer player) {
+            long now = System.currentTimeMillis();
+            if (now - lastFallbackTrace > 1000) {
+                lastFallbackTrace = now;
+                NoverisChatBubbles.LOGGER.info("Player render fallback invoked for {}", player.getUUID());
+            }
             render(player, event.getPoseStack(), event.getMultiBufferSource());
+        }
     }
 
     private static void render(net.minecraft.client.player.AbstractClientPlayer player, PoseStack pose, MultiBufferSource source) {
