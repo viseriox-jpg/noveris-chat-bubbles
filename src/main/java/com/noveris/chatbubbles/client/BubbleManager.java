@@ -2,13 +2,16 @@ package com.noveris.chatbubbles.client;
 
 import com.noveris.chatbubbles.network.BubbleMessagePayload;
 import com.noveris.chatbubbles.config.ClientConfig;
+import net.minecraft.network.chat.Component;
 import java.util.*;
 
 public final class BubbleManager {
-    public record Bubble(String playerName, String text, long expiresAt, long createdAt, long duration) {}
+    public record Bubble(Component playerName, String text, long expiresAt, long createdAt, long duration) {}
     private static final Map<UUID, Deque<Bubble>> BUBBLES = new HashMap<>();
+    private static boolean enabled = true;
     private BubbleManager() {}
     public static void receive(BubbleMessagePayload payload) {
+        if (!enabled) return;
         long now = System.currentTimeMillis();
         long duration = Math.min(Math.max(1_000L, payload.serverDurationMillis()), ClientConfig.DURATION.get() * 1000L);
         Deque<Bubble> bubbles = BUBBLES.computeIfAbsent(payload.sender(), ignored -> new ArrayDeque<>());
@@ -20,4 +23,6 @@ public final class BubbleManager {
     public static Map<UUID, Deque<Bubble>> visible(long now) { cleanup(now); return Collections.unmodifiableMap(BUBBLES); }
     private static void cleanup(long now) { BUBBLES.entrySet().removeIf(e -> { e.getValue().removeIf(b -> b.expiresAt() <= now); return e.getValue().isEmpty(); }); }
     public static void clear() { BUBBLES.clear(); }
+    public static boolean toggleEnabled() { enabled = !enabled; if (!enabled) BUBBLES.clear(); return enabled; }
+    public static boolean isEnabled() { return enabled; }
 }

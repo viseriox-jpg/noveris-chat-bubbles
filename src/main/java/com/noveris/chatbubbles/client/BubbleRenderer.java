@@ -11,7 +11,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import java.util.*;
@@ -20,12 +20,12 @@ import java.util.*;
 public final class BubbleRenderer {
     private BubbleRenderer() {}
     @SubscribeEvent
-    public static void render(RenderPlayerEvent.Post event) {
+    public static void render(RenderLivingEvent.Post<?, ?> event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer player)) return;
         var mc = Minecraft.getInstance();
         if (mc.player == null || mc.player.distanceToSqr(player) > Math.pow(ClientConfig.RENDER_DISTANCE.get(), 2)) return;
         Deque<BubbleManager.Bubble> bubbles = BubbleManager.visible(System.currentTimeMillis()).get(player.getUUID());
-        if (bubbles == null || bubbles.isEmpty()) return;
+        if (!BubbleManager.isEnabled() || bubbles == null || bubbles.isEmpty()) return;
         PoseStack pose = event.getPoseStack();
         pose.pushPose();
         pose.translate(0, player.getBbHeight() + 0.35, 0);
@@ -39,8 +39,10 @@ public final class BubbleRenderer {
         List<BubbleManager.Bubble> ordered = new ArrayList<>(bubbles);
         for (int i = ordered.size() - 1; i >= 0; i--) {
             BubbleManager.Bubble bubble = ordered.get(i);
-            String displayText = ClientConfig.SHOW_PLAYER_NAME.get() ? bubble.playerName() + ": " + bubble.text() : bubble.text();
-            List<FormattedCharSequence> lines = font.split(Component.literal(displayText), ClientConfig.MAX_WIDTH.get());
+            Component displayText = ClientConfig.SHOW_PLAYER_NAME.get()
+                    ? Component.empty().append(bubble.playerName()).append(Component.literal(": ")).append(Component.literal(bubble.text()))
+                    : Component.literal(bubble.text());
+            List<FormattedCharSequence> lines = font.split(displayText, ClientConfig.MAX_WIDTH.get());
             if (lines.size() > ClientConfig.MAX_LINES.get()) lines = lines.subList(0, ClientConfig.MAX_LINES.get());
             int width = 0; for (FormattedCharSequence line : lines) width = Math.max(width, font.width(line));
             int padding = ClientConfig.PADDING.get(); int boxW = width + padding * 2; int boxH = lines.size() * 9 + padding * 2;

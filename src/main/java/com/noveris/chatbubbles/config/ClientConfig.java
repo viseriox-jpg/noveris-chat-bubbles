@@ -26,7 +26,7 @@ public final class ClientConfig {
         FADE_IN_DURATION = b.defineInRange("fadeInDuration", 180, 0, 2000);
         FADE_OUT_DURATION = b.defineInRange("fadeOutDuration", 500, 0, 5000);
         SHOW_ARROW = b.define("showArrow", true);
-        SHOW_PLAYER_NAME = b.define("showPlayerName", false);
+        SHOW_PLAYER_NAME = b.define("showPlayerName", true);
         b.pop();
         SPEC = b.build();
     }

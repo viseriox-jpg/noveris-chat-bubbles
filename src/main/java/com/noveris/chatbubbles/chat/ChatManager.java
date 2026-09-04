@@ -29,7 +29,7 @@ public final class ChatManager {
         // PlayerEvent.NameFormat (used by noveris-races /apelido) is reflected by
         // ServerPlayer#getDisplayName after refreshDisplayName(). This keeps the
         // integration optional and preserves the real UUID as the identity.
-        String displayName = sender.getDisplayName().getString();
+        Component displayName = sender.getDisplayName();
         BubbleMessagePayload payload = new BubbleMessagePayload(sender.getUUID(), displayName, message,
                 ServerConfig.BUBBLE_DURATION.get() * 1000L, ServerConfig.MAX_ACTIVE_BUBBLES.get());
         for (ServerPlayer recipient : sender.server.getPlayerList().getPlayers()) {
