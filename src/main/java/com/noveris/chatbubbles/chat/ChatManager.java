@@ -1,5 +1,6 @@
 package com.noveris.chatbubbles.chat;
 
+import com.noveris.chatbubbles.NoverisChatBubbles;
 import com.noveris.chatbubbles.config.ServerConfig;
 import com.noveris.chatbubbles.network.BubbleMessagePayload;
 import com.noveris.chatbubbles.network.NetworkHandler;
