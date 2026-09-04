@@ -26,7 +26,11 @@ public final class ChatManager {
         if (!ServerConfig.LOCAL_CHAT_ENABLED.get()) return;
         double radius = ServerConfig.LOCAL_CHAT_RADIUS.get();
         double radiusSquared = radius * radius;
-        BubbleMessagePayload payload = new BubbleMessagePayload(sender.getUUID(), sender.getName().getString(), message,
+        // PlayerEvent.NameFormat (used by noveris-races /apelido) is reflected by
+        // ServerPlayer#getDisplayName after refreshDisplayName(). This keeps the
+        // integration optional and preserves the real UUID as the identity.
+        String displayName = sender.getDisplayName().getString();
+        BubbleMessagePayload payload = new BubbleMessagePayload(sender.getUUID(), displayName, message,
                 ServerConfig.BUBBLE_DURATION.get() * 1000L, ServerConfig.MAX_ACTIVE_BUBBLES.get());
         for (ServerPlayer recipient : sender.server.getPlayerList().getPlayers()) {
             if (recipient.level() == sender.level() && recipient.distanceToSqr(sender) <= radiusSquared) {
@@ -41,7 +45,7 @@ public final class ChatManager {
         if (message.isEmpty()) return;
         int limit = ServerConfig.MAX_MESSAGE_LENGTH.get();
         if (message.length() > limit) message = message.substring(0, limit);
-        String format = ServerConfig.GLOBAL_FORMAT.get().replace("{player}", sender.getName().getString()).replace("{message}", message);
+        String format = ServerConfig.GLOBAL_FORMAT.get().replace("{player}", sender.getDisplayName().getString()).replace("{message}", message);
         Component component = Component.literal(format);
         for (ServerPlayer player : sender.server.getPlayerList().getPlayers()) player.sendSystemMessage(component);
     }

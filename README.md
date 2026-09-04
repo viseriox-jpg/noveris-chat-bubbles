@@ -20,13 +20,13 @@ Texto enviado no chat normal é interceptado antes da distribuição vanilla e v
 
 O arquivo server-side `config/noveris_chat_bubbles-server.toml` contém `localChatRadius`, `maxMessageLength`, `bubbleDuration`, `maxActiveBubbles`, `globalChatEnabled`, `localChatEnabled` e `globalFormat` (`{player}` e `{message}`).
 
-O arquivo client-side `config/noveris_chat_bubbles-client.toml` contém cores hexadecimais, opacidade, `scale`, `padding`, `maxWidth`, `maxLines`, `renderDistance`, duração visual, fade-in/out, `showArrow`, `showPlayerName` e `font`. A fonte aceita ResourceLocations como `minecraft:default` e `minecraft:uniform`; nesta versão a seleção é preparada na configuração, enquanto a renderização usa a fonte do HUD até a resolução de fontes customizadas ser exposta pela API de forma estável.
+O arquivo client-side `config/noveris_chat_bubbles-client.toml` contém cores hexadecimais, opacidade, `scale`, `padding`, `maxWidth`, `maxLines`, `renderDistance`, duração visual, fade-in/out, `showArrow`, `showPlayerName` e `font`. Também é possível editar esses valores no botão de configuração do mod dentro da tela `Mods` do Minecraft. A fonte aceita ResourceLocations como `minecraft:default` e `minecraft:uniform`; nesta versão a seleção é preparada na configuração, enquanto a renderização usa a fonte do HUD até a resolução de fontes customizadas ser exposta pela API de forma estável.
 
 ## Desenvolvimento
 
 `./gradlew runClient` inicia o cliente de desenvolvimento. `./gradlew runServer` inicia o servidor dedicado; aceite a EULA em `runs/server/eula.txt` e, para testes locais, defina `online-mode=false` em `runs/server/server.properties`.
 
-Arquitetura: `chat` contém canais, comandos e autoridade do servidor; `network` contém o payload explícito com UUID; `client` mantém as bolhas e renderiza em `RenderLivingEvent.Post`; `config` separa regras server-side de preferências visuais client-side.
+Arquitetura: `chat` contém canais, comandos e autoridade do servidor; `network` contém o payload explícito com UUID; `client` mantém as bolhas, registra a tela de configuração e renderiza em `RenderPlayerEvent.Post`; `config` separa regras server-side de preferências visuais client-side.
 
 ## Secure chat e limitações
 

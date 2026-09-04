@@ -8,11 +8,10 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLivingEvent;
+import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import java.util.*;
@@ -21,7 +20,7 @@ import java.util.*;
 public final class BubbleRenderer {
     private BubbleRenderer() {}
     @SubscribeEvent
-    public static void render(RenderLivingEvent.Post<?, ?> event) {
+    public static void render(RenderPlayerEvent.Post event) {
         if (!(event.getEntity() instanceof AbstractClientPlayer player)) return;
         var mc = Minecraft.getInstance();
         if (mc.player == null || mc.player.distanceToSqr(player) > Math.pow(ClientConfig.RENDER_DISTANCE.get(), 2)) return;
@@ -31,8 +30,10 @@ public final class BubbleRenderer {
         pose.pushPose();
         pose.translate(0, player.getBbHeight() + 0.35, 0);
         pose.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
-        float scale = ClientConfig.SCALE.get().floatValue();
-        pose.scale(scale, scale, scale);
+        // Font coordinates are pixels. Vanilla name tags use -0.025 in world
+        // space and a negative XY scale so the text faces the camera correctly.
+        float scale = ClientConfig.SCALE.get().floatValue() * 0.025F;
+        pose.scale(-scale, -scale, scale);
         Font font = mc.font;
         float y = 0;
         List<BubbleManager.Bubble> ordered = new ArrayList<>(bubbles);
