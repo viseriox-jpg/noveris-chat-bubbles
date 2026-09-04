@@ -61,7 +61,8 @@ public final class BubbleRenderer {
     /** Fallback for player renderers on NeoForge builds where the living event is not dispatched for avatars. */
     @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent.Post event) {
-        render(event.getEntity(), event.getPoseStack(), event.getMultiBufferSource());
+        if (event.getEntity() instanceof AbstractClientPlayer player)
+            render(player, event.getPoseStack(), event.getMultiBufferSource());
     }
 
     private static void render(net.minecraft.client.player.AbstractClientPlayer player, PoseStack pose, MultiBufferSource source) {
