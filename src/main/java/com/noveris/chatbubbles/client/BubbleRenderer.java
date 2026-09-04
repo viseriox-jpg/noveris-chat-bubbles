@@ -9,6 +9,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.neoforge.client.event.RenderPlayerEvent;
+import net.neoforged.bus.api.SubscribeEvent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.joml.Matrix4f;
 import java.util.*;
@@ -22,6 +23,7 @@ public final class BubbleRenderer {
     private static long lastFallbackTrace;
     private BubbleRenderer() {}
 
+    @SubscribeEvent
     public static void renderPlayer(RenderPlayerEvent.Post event) {
         if (event.getEntity() instanceof AbstractClientPlayer player) {
             long now = System.currentTimeMillis();
