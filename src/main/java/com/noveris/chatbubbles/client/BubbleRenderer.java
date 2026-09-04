@@ -31,7 +31,8 @@ public final class BubbleRenderer {
         pose.pushPose();
         pose.translate(0, player.getBbHeight() + 0.35, 0);
         pose.mulPose(mc.getEntityRenderDispatcher().cameraOrientation());
-        pose.scale((float) ClientConfig.SCALE.get(), (float) ClientConfig.SCALE.get(), (float) ClientConfig.SCALE.get());
+        float scale = ClientConfig.SCALE.get().floatValue();
+        pose.scale(scale, scale, scale);
         Font font = mc.font;
         float y = 0;
         List<BubbleManager.Bubble> ordered = new ArrayList<>(bubbles);
