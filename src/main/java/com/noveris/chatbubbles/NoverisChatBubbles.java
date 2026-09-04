@@ -11,10 +11,13 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.bus.api.IEventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mod(NoverisChatBubbles.MOD_ID)
 public final class NoverisChatBubbles {
     public static final String MOD_ID = "noveris_chat_bubbles";
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public NoverisChatBubbles(IEventBus modBus, ModContainer container) {
         container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);

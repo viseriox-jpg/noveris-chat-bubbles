@@ -16,6 +16,7 @@ public final class ChatManager {
         String message = event.getRawText() == null ? "" : event.getRawText().trim();
         if (message.isEmpty()) { event.setCanceled(true); return; }
         ServerPlayer sender = event.getPlayer();
+        NoverisChatBubbles.LOGGER.info("Intercepted player chat from {}: {}", sender.getUUID(), message);
         int limit = ServerConfig.MAX_MESSAGE_LENGTH.get();
         if (message.length() > limit) message = message.substring(0, limit);
         if (!ServerConfig.LOCAL_CHAT_ENABLED.get()) return;
@@ -33,11 +34,14 @@ public final class ChatManager {
         Component displayName = sender.getDisplayName();
         BubbleMessagePayload payload = new BubbleMessagePayload(sender.getUUID(), displayName, message,
                 ServerConfig.BUBBLE_DURATION.get() * 1000L, ServerConfig.MAX_ACTIVE_BUBBLES.get());
+        int sent = 0;
         for (ServerPlayer recipient : sender.server.getPlayerList().getPlayers()) {
             if (recipient.level() == sender.level() && recipient.distanceToSqr(sender) <= radiusSquared) {
                 NetworkHandler.sendTo(recipient, payload);
+                sent++;
             }
         }
+        NoverisChatBubbles.LOGGER.info("Local bubble sent from {} to {} player(s), radius {}", sender.getUUID(), sent, radius);
     }
 
     public static void broadcastGlobal(ServerPlayer sender, String raw) {
