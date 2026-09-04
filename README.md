@@ -8,7 +8,7 @@ Mod NeoForge para Minecraft 1.21.1 que transforma o chat normal entre jogadores 
 - NeoForge 21.1.248 ou compatível da série 21.1
 - Java 21
 
-Compile com `./gradlew build` e coloque `build/libs/noveris_chat_bubbles-1.0.0.jar` na pasta `mods` de um cliente e servidor NeoForge.
+Compile com `./gradlew build` e coloque `build/libs/noveris_chat_bubbles-21.1.248.jar` na pasta `mods` de um cliente e servidor NeoForge.
 
 ## Uso
 
