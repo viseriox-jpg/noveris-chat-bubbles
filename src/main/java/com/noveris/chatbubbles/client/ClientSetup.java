@@ -23,7 +23,7 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void addPlayerBubbleLayers(EntityRenderersEvent.AddLayers event) {
-        for (String skin : event.getSkins()) {
+        for (var skin : event.getSkins()) {
             var renderer = event.getSkin(skin);
             if (renderer != null) renderer.addLayer(new BubbleLayer(renderer));
         }

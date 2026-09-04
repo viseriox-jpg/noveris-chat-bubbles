@@ -4,6 +4,7 @@ import com.noveris.chatbubbles.config.ServerConfig;
 import com.noveris.chatbubbles.network.BubbleMessagePayload;
 import com.noveris.chatbubbles.network.NetworkHandler;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.event.ServerChatEvent;
 import java.util.Locale;
@@ -51,7 +52,7 @@ public final class ChatManager {
 
     /** Builds the configured format without flattening the formatted nickname. */
     private static Component formatGlobal(Component displayName, String message, String format) {
-        Component result = Component.empty();
+        MutableComponent result = Component.empty();
         int cursor = 0;
         while (cursor < format.length()) {
             int playerToken = format.indexOf("{player}", cursor);
